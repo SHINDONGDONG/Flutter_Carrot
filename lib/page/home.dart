@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_carrot/page/detail.dart';
 import 'package:flutter_carrot/repository/contents_repository.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 class Home extends StatefulWidget {
@@ -40,74 +42,83 @@ class _HomeState extends State<Home> {
       //세퍼레이트는 개별개별의 아이템마다 사이간격 라인을 손쉽게 나눌수 잇게해줌
       padding: EdgeInsets.symmetric(horizontal: 10),
       itemBuilder: (context, index) {
-        return Container(
-          padding: EdgeInsets.symmetric(vertical: 10),
-          child: Row(
-            children: [
-              ClipRRect(
-                //ClipRRect 로 보더레디우스 올 전체값을 레디우스 서클로 20줌
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                  child: Image.asset(
-                    datas[index]["image"],
+        return GestureDetector(
+          onTap: (){
+           print("${datas[index]["title"]} 번 클릭됨");
+           return Get.to(DetailContentView(datas[index]));
+          },
+          child: Container(
+            padding: EdgeInsets.symmetric(vertical: 10),
+            child: Row(
+              children: [
+                ClipRRect(
+                  //ClipRRect 로 보더레디우스 올 전체값을 레디우스 서클로 20줌
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                    child: Hero(
+                      tag: datas[index]["cid"],
+                      child: Image.asset(
+                        datas[index]["image"],
+                        height: 100,
+                        width: 100,
+                      ),
+                    )),
+                //현재 datas 리스트 맵형식에 index(리스트인덱스) ("image")맵형식의 데이터를 불러옴
+                Expanded(
+                  child: Container(
+                    padding: EdgeInsets.only(left: 20),
                     height: 100,
-                    width: 100,
-                  )),
-              //현재 datas 리스트 맵형식에 index(리스트인덱스) ("image")맵형식의 데이터를 불러옴
-              Expanded(
-                child: Container(
-                  padding: EdgeInsets.only(left: 20),
-                  height: 100,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        datas[index]["title"],
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(fontSize: 15),
-                      ),
-                      SizedBox(
-                        height: 5,
-                      ),
-                      Text(
-                        datas[index]["location"],
-                        style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.black.withOpacity(0.3)),
-                      ),
-                      SizedBox(
-                        height: 5,
-                      ),
-                      Text(
-                        calcStringToWon(datas[index]["price"]),
-                        style: TextStyle(fontWeight: FontWeight.w500),
-                      ),
-                      SizedBox(
-                        height: 5,
-                      ),
-                      Expanded(
-                        child: Container(
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              SvgPicture.asset(
-                                "assets/svg/heart_off.svg",
-                                height: 13,
-                                width: 13,
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Text(datas[index]["likes"]),
-                            ],
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          datas[index]["title"],
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(fontSize: 15),
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Text(
+                          datas[index]["location"],
+                          style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.black.withOpacity(0.3)),
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Text(
+                          calcStringToWon(datas[index]["price"]),
+                          style: TextStyle(fontWeight: FontWeight.w500),
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Expanded(
+                          child: Container(
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                SvgPicture.asset(
+                                  "assets/svg/heart_off.svg",
+                                  height: 13,
+                                  width: 13,
+                                ),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Text(datas[index]["likes"]),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              )
-            ],
+                )
+              ],
+            ),
           ),
         );
       },
