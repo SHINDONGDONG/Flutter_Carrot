@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class ManorTemperature extends StatelessWidget {
   double manorTemp;
@@ -39,7 +38,7 @@ class ManorTemperature extends StatelessWidget {
       child: Column(
         children: [
           Text(
-            "${manorTemp}℃",
+            "$manorTemp℃",
             style: TextStyle(
                 color: temperColor[level],
                 fontSize: 18,
@@ -78,7 +77,7 @@ class ManorTemperature extends StatelessWidget {
               _makeTempLabelAndBar(),
               Container(
                 margin: const EdgeInsets.only(left: 7),
-                child: Image.asset("assets/images/level-${level}.jpg"),height: 30,width: 30,),
+                child: Image.asset("assets/images/level-$level.jpg"),height: 30,width: 30,),
             ],
           ),
           Text(

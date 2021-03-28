@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 
 
 //데이터를 동 별, 게시데이터등을 담으려면 Map<String dynamic>으로 데이터를 담아주자.
