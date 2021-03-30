@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_carrot/page/detail.dart';
 import 'package:flutter_carrot/repository/contents_repository.dart';
+import 'package:flutter_carrot/utils/data_utils.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -88,7 +89,7 @@ class _HomeState extends State<Home> {
                           height: 5,
                         ),
                         Text(
-                          calcStringToWon(datas[index]["price"]),
+                          DataUtils.calcStringToWon(datas[index]["price"]),
                           style: TextStyle(fontWeight: FontWeight.w500),
                         ),
                         SizedBox(
@@ -213,14 +214,6 @@ class _HomeState extends State<Home> {
     }
   }
 
-//intl 라이브러리 사용
-  final oCcy = new NumberFormat('#,###', "ko_KR");
-
-//스트링 값의 price를 받아서 won으로 바꾸는 메소드
-  String calcStringToWon(String priceString) {
-    if(priceString == "무료나눔"){return priceString;}
-    return "${oCcy.format(int.parse(priceString))}원";
-  }
 
   BottomNavigationBarItem _bottomNavigationBarItem(String iconName,
       String label) {

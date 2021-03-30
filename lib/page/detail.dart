@@ -1,6 +1,8 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_carrot/components/manor_temperat_widget.dart';
+import 'package:flutter_carrot/utils/data_utils.dart';
+import 'package:flutter_svg/svg.dart';
 
 class DetailContentView extends StatefulWidget {
   Map<String, String> data;
@@ -9,7 +11,6 @@ class DetailContentView extends StatefulWidget {
 
   @override
   _DetailContentViewState createState() => _DetailContentViewState();
-
 }
 
 class _DetailContentViewState extends State<DetailContentView> {
@@ -28,9 +29,7 @@ class _DetailContentViewState extends State<DetailContentView> {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
     _current = 0;
-    size = MediaQuery
-        .of(context)
-        .size;
+    size = MediaQuery.of(context).size;
     imgList = [
       {"id": "0", "url": widget.data["image"]},
       {"id": "1", "url": widget.data["image"]},
@@ -54,25 +53,57 @@ class _DetailContentViewState extends State<DetailContentView> {
 
   Widget _bottomNavigation() {
     return Container(
-      child: Center(
-        child: ListTile(
-          leading: IconButton(icon: Icon(Icons.favorite_border),onPressed: () {},),
-          title: Text('10000'),
-          subtitle: Text('100'),
-          // trailing: ,
-        ),
-      ),
+      padding: EdgeInsets.symmetric(horizontal: 15),
       width: size.width,
       height: 55,
+      child: Center(
+          child: Row(
+        children: [
+          GestureDetector(
+            onTap: () {
+              print('관심 이벤트 발생');
+            },
+            child: SvgPicture.asset(
+              "assets/svg/heart_off.svg",
+              height: 25,
+              width: 25,
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.only(left: 15,right: 10),
+            height: 40,
+            width: 1,
+            color: Colors.grey.withOpacity(0.4),
+          ),
+          Column(
+            children: [
+              Text(DataUtils.calcStringToWon((widget.data["price"])),style: TextStyle(fontSize: 17,fontWeight:FontWeight.bold),),
+              Text('가격제안불가',style: TextStyle(fontSize: 14,color: Colors.grey),),
+            ],
+          ),
+          Expanded(child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 20,vertical: 7),
+                decoration: BoxDecoration(
+                    color: Color(0xfff08f4f),
+                    borderRadius: BorderRadius.circular(5)),
+                child: Text('채팅으로 거래하기',
+                style: TextStyle(color: Colors.white,fontSize: 16,fontWeight: FontWeight.bold),
+                ),
+              ),
+            ],
+          ),),
+        ],
+      )),
     );
   }
 
   Widget appBarWidget() {
     return AppBar(
       backgroundColor: Colors.transparent,
-      iconTheme: IconThemeData(
-          color: Colors.white
-      ),
+      iconTheme: IconThemeData(color: Colors.white),
       elevation: 0.0,
       actions: [
         IconButton(icon: Icon(Icons.share), onPressed: () {}),
@@ -85,12 +116,15 @@ class _DetailContentViewState extends State<DetailContentView> {
     return Container(
       child: Stack(
         children: [
-          Hero( //Hero로 왔다갔다할 때 이미지가 스타일리쉬적으로 넘어갈수잇게
+          Hero(
+            //Hero로 왔다갔다할 때 이미지가 스타일리쉬적으로 넘어갈수잇게
             tag: widget.data["cid"], //데이터에서 추가한 cid로 판별
-            child: CarouselSlider( //캐러설 슬라이드 패키지적용
-              items: imgList.map((
-                  map) { //이미지 리스트를 맵으로 돌려서 하나씩 빼옴   //itmes = 슬라이드를 보여줄 이미지
-                return Image.asset(map["url"],
+            child: CarouselSlider(
+              //캐러설 슬라이드 패키지적용
+              items: imgList.map((map) {
+                //이미지 리스트를 맵으로 돌려서 하나씩 빼옴   //itmes = 슬라이드를 보여줄 이미지
+                return Image.asset(
+                  map["url"],
                   width: size.width,
                   fit: BoxFit.fill,
                 );
@@ -130,7 +164,6 @@ class _DetailContentViewState extends State<DetailContentView> {
                     color: _current == int.parse(map["id"])
                         ? Colors.white
                         : Colors.white.withOpacity(0.4),
-
                   ),
                 );
               }).toList(),
@@ -151,17 +184,26 @@ class _DetailContentViewState extends State<DetailContentView> {
             backgroundImage: AssetImage("assets/images/user.png"),
             radius: 25,
           ),
-          SizedBox(width: 10,),
+          SizedBox(
+            width: 10,
+          ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('개발하는남자',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),),
-              Text('제주도 도담시', style: TextStyle(fontSize: 13),),
+              Text(
+                '개발하는남자',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              ),
+              Text(
+                '제주도 도담시',
+                style: TextStyle(fontSize: 13),
+              ),
             ],
           ),
-          Expanded(child: ManorTemperature(manorTemp: 37.5,)),
-
+          Expanded(
+              child: ManorTemperature(
+            manorTemp: 37.5,
+          )),
         ],
       ),
     );
@@ -170,7 +212,9 @@ class _DetailContentViewState extends State<DetailContentView> {
   Widget _line() {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 15),
-      height: 1, color: Colors.grey.withOpacity(0.3),);
+      height: 1,
+      color: Colors.grey.withOpacity(0.3),
+    );
   }
 
   Widget _contentDetail() {
@@ -179,18 +223,28 @@ class _DetailContentViewState extends State<DetailContentView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          SizedBox(height: 15,),
-          Text(widget.data["title"],
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),),
+          SizedBox(
+            height: 15,
+          ),
+          Text(
+            widget.data["title"],
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+          ),
           Text("디지털 가전/가전 22시간 전",
               style: TextStyle(color: Colors.grey, fontSize: 12)),
-          SizedBox(height: 15,),
+          SizedBox(
+            height: 15,
+          ),
           Text("선물받은 상품이고\n한번밖에 꺼내보지 않아고\n맛있겠습죠?",
               style: TextStyle(fontSize: 15, height: 1.5)),
-          SizedBox(height: 15,),
+          SizedBox(
+            height: 15,
+          ),
           Text("채팅 3・관심 17・조회 295",
               style: TextStyle(color: Colors.grey, fontSize: 12)),
-          SizedBox(height: 15,),
+          SizedBox(
+            height: 15,
+          ),
         ],
       ),
     );
@@ -202,49 +256,72 @@ class _DetailContentViewState extends State<DetailContentView> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text('판매자님의 판매 상품',
-            style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),
-          Text('모두보기',
-            style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),
-
-        ],),
+          Text(
+            '판매자님의 판매 상품',
+            style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+          ),
+          Text(
+            '모두보기',
+            style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+          ),
+        ],
+      ),
     );
   }
 
   Widget _bodyWidget() {
-    return CustomScrollView(                //일반 스크롤뷰말고 커스텀 스크롤뷰로 
-        slivers: [ 
-      SliverList(delegate: SliverChildListDelegate(          //슬리버 리스트로 델리게이트 슬리버차일드리스트 딜레게이트
-        [
-            _makeSilderImage(),
-            _sellerSimpleInfo(),
-            _line(),
-            _contentDetail(),
-            _line(),
-            _otherCellContest(),
-          ],
-    ),
-      ),
-          SliverPadding(padding: EdgeInsets.symmetric(horizontal: 15),           //패딩도 슬리버 패딩
-            sliver: SliverGrid(                                       //가로 개수     //가로 넓이            //세로 넓이
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2,mainAxisSpacing: 10,crossAxisSpacing: 10),
-            delegate: SliverChildListDelegate(List.generate(20,(index){         //실질적 리스트 제네레이터 
-            return Container(child:
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ClipRRect(
-                    borderRadius:BorderRadius.circular(10),
-                    child: Container(color: Colors.grey,height: 120,)),
-                Text('상품 제목',style: TextStyle(fontSize: 14),),
-                Text('금액',style: TextStyle(fontSize: 14,fontWeight: FontWeight.bold),),
-              ],
-            ),);                //실제 컨텐츠
-          }).toList(),
+    return CustomScrollView(
+      //일반 스크롤뷰말고 커스텀 스크롤뷰로
+      slivers: [
+        SliverList(
+          delegate: SliverChildListDelegate(
+            //슬리버 리스트로 델리게이트 슬리버차일드리스트 딜레게이트
+            [
+              _makeSilderImage(),
+              _sellerSimpleInfo(),
+              _line(),
+              _contentDetail(),
+              _line(),
+              _otherCellContest(),
+            ],
           ),
+        ),
+        SliverPadding(
+          padding: EdgeInsets.symmetric(horizontal: 15), //패딩도 슬리버 패딩
+          sliver: SliverGrid(
+            //가로 개수     //가로 넓이            //세로 넓이
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2, mainAxisSpacing: 10, crossAxisSpacing: 10),
+            delegate: SliverChildListDelegate(
+              List.generate(20, (index) {
+                //실질적 리스트 제네레이터
+                return Container(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: Container(
+                            color: Colors.grey,
+                            height: 120,
+                          )),
+                      Text(
+                        '상품 제목',
+                        style: TextStyle(fontSize: 14),
+                      ),
+                      Text(
+                        '금액',
+                        style: TextStyle(
+                            fontSize: 14, fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                ); //실제 컨텐츠
+              }).toList(),
+            ),
           ),
-          ),
-    ],
+        ),
+      ],
     );
   }
 }
