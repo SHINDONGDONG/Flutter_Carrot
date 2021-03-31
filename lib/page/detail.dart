@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_carrot/components/manor_temperat_widget.dart';
 import 'package:flutter_carrot/utils/data_utils.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
 
 class DetailContentView extends StatefulWidget {
   Map<String, String> data;
@@ -13,15 +14,31 @@ class DetailContentView extends StatefulWidget {
   _DetailContentViewState createState() => _DetailContentViewState();
 }
 
-class _DetailContentViewState extends State<DetailContentView> {
+class _DetailContentViewState extends State<DetailContentView> with SingleTickerProviderStateMixin {
   Size size;
   List<Map<String, String>> imgList;
   int _current;
+  ScrollController _controller = ScrollController();
+  double scrollpositionToAplha = 0;
+  AnimationController _animationController;
+  Animation _colorTween;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    _animationController = AnimationController(vsync: this);  //애니메이션 컨트롤러를 사용하기위해 꼭 선언
+    _colorTween = ColorTween(begin: Colors.white,end: Colors.black).animate(_animationController); //시작 컬러에서 끝날때의 컬러를 지정해주고 매니메이터 컨트롤러를 지정해준다.
+    _controller.addListener(() {
+      setState(() {
+        if(scrollpositionToAplha > 255){
+          scrollpositionToAplha = 255;
+        }else{
+          scrollpositionToAplha = _controller.offset;
+        }
+        _animationController.value = scrollpositionToAplha / 255;  //애니메이터 컨트롤러 밸류에 스크린 알파값을 넣어준다 (반전)
+      });
+    }); //컨트롤이 변할때마다 중괄호를 실행
   }
 
   @override
@@ -100,14 +117,27 @@ class _DetailContentViewState extends State<DetailContentView> {
     );
   }
 
+  //ScrolloControllerによりAppBarのアイコンが色変わる。
+  Widget makeIcon(IconData icon){
+    return AnimatedBuilder(
+      animation: _colorTween,
+      builder: (context,child)=> Icon(icon,color: _colorTween.value,),);
+  }
+
   Widget appBarWidget() {
     return AppBar(
-      backgroundColor: Colors.transparent,
+      backgroundColor: Colors.white.withAlpha(scrollpositionToAplha.toInt()),  //스크롤 offset값을 화이트 알파로 넣어줌으로 스크롤이 움직이면서 색상이변한담.
       iconTheme: IconThemeData(color: Colors.white),
       elevation: 0.0,
+      leading: IconButton(
+        onPressed: () => Get.back(),
+        icon: makeIcon(Icons.arrow_back),
+      ),
+
       actions: [
-        IconButton(icon: Icon(Icons.share), onPressed: () {}),
-        IconButton(icon: Icon(Icons.more_vert), onPressed: () {}),
+         //애니메이션 컬러 컨트롤러를 주입하여 컬러가 스크롤 컨트롤러위치에 따라 변하도록 함.
+        IconButton(icon: makeIcon(Icons.share), onPressed: () {}),
+        IconButton(icon: makeIcon(Icons.more_vert), onPressed: () {}),
       ],
     );
   }
@@ -272,6 +302,8 @@ class _DetailContentViewState extends State<DetailContentView> {
   Widget _bodyWidget() {
     return CustomScrollView(
       //일반 스크롤뷰말고 커스텀 스크롤뷰로
+      //스크롤 위치에따라 앱바 백그라운드 컬러가 달라지게만듬 컨트롤러를 심어줘야함
+      controller: _controller,
       slivers: [
         SliverList(
           delegate: SliverChildListDelegate(
