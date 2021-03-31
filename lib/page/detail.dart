@@ -22,11 +22,13 @@ class _DetailContentViewState extends State<DetailContentView> with SingleTicker
   double scrollpositionToAplha = 0;
   AnimationController _animationController;
   Animation _colorTween;
-
+  bool isMyFavoriteContent;
+  final scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    isMyFavoriteContent = false;
     _animationController = AnimationController(vsync: this);  //애니메이션 컨트롤러를 사용하기위해 꼭 선언
     _colorTween = ColorTween(begin: Colors.white,end: Colors.black).animate(_animationController); //시작 컬러에서 끝날때의 컬러를 지정해주고 매니메이터 컨트롤러를 지정해준다.
     _controller.addListener(() {
@@ -60,6 +62,7 @@ class _DetailContentViewState extends State<DetailContentView> with SingleTicker
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        key: scaffoldKey,
         extendBodyBehindAppBar: true, //body 이하로 확장하겠다는
         appBar: appBarWidget(),
         body: _bodyWidget(),
@@ -78,12 +81,23 @@ class _DetailContentViewState extends State<DetailContentView> with SingleTicker
         children: [
           GestureDetector(
             onTap: () {
-              print('관심 이벤트 발생');
+              setState(() {
+              isMyFavoriteContent = !isMyFavoriteContent;
+              scaffoldKey.currentState.showSnackBar(SnackBar(duration: Duration(milliseconds: 1000),
+                  content: Text(
+                    isMyFavoriteContent ?
+                    "관심목록에 추가 되었습니다." :
+                    "관심목록에 해제 되었습니다.",
+                  )));
+              });
             },
             child: SvgPicture.asset(
+              isMyFavoriteContent ?
+              "assets/svg/heart_on.svg" :
               "assets/svg/heart_off.svg",
               height: 25,
               width: 25,
+              color: Color(0xfff08f4f),
             ),
           ),
           Container(
@@ -93,8 +107,10 @@ class _DetailContentViewState extends State<DetailContentView> with SingleTicker
             color: Colors.grey.withOpacity(0.4),
           ),
           Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(DataUtils.calcStringToWon((widget.data["price"])),style: TextStyle(fontSize: 17,fontWeight:FontWeight.bold),),
+              SizedBox(height: 5,),
               Text('가격제안불가',style: TextStyle(fontSize: 14,color: Colors.grey),),
             ],
           ),
